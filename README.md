@@ -38,6 +38,77 @@ Target: Among teenagers who want to start volunteer work, there are not many cas
 https://www.bigdata-culture.kr/bigdata/user/data_market/detail.do?id=4174bb76-1077-4e52-a84b-e341397c7c74
 
 ### Step3. Data inspection
+#### Full data information
+Data columns (total 63 columns):</br>
+| #   | Column                     | Non-Null Count | Dtype   |
+| --- | ------                     | -------------- | -----   |
+| 0   | PROGRM_SEQ_NO              | 211575         | int64   |
+| 1   | PROGRM_NO_CN               | 211575         | object  |
+| 2   | REGIST_SDIV_CD             | 211575         | int64   |
+| 3   | REGIST_SDIV_CD_NM          | 211575         | object  |
+| 4   | DETAIL_TY_CD               | 209415         | float64 |
+| 5   | DETAIL_TY_CD_NM            | 209415         | object  |
+| 6   | PROGRM_NM                  | 211575         | object  |
+| 7   | MAIN_CN                    | 211557         | object  |
+| 8   | ACT_PLACE_CN               | 211575         | object  |
+| 9   | PRPARE_CN                  | 99472          | object  |
+| 10  | REQST_POSBL_BEGIN_DE       | 211575         | int64   |
+| 11  | REQST_POSBL_END_DE         | 211575         | int64   |
+| 12  | CANCL_POSBL_BEGIN_DE       | 211575         | int64   |
+| 13  | CANCL_POSBL_END_DE         | 211575         | int64   |
+| 14  | UPDT_DT                    | 211575         | object  |
+| 15  | ACT_CTPRVN_CD              | 211575         | int64   |
+| 16  | ACT_CTPRVN_CD_NM           | 211575         | object  |
+| 17  | ONE_TME_PROGRM_SEQ_NO      | 211575         | int64   |
+| 18  | INSTT_SEQ_NO               | 211575         | int64   |
+| 19  | INSTT_CLUB_SEQ_NO          | 211575         | int64   |
+| 20  | ACT_RELM_CD_NM             | 211575         | int64   |
+| 21  | ACT_RELM_CD                | 211575         | object  |
+| 22  | DETAIL_CN_CD               | 209320         | float64 |
+| 23  | DETAIL_CN_CD_NM            | 209320         | object  |
+| 24  | BSNS_CD                    | 5              | float64 |
+| 25  | BSNS_CD_NM                 | 5              | object  |
+| 26  | REGIST_CTPRVN_CD           | 211575         | int64   |
+| 27  | REGIST_CTPRVN_CD_NM        | 211575         | object  |
+| 28  | ACT_SIGNGU_CD              | 211564         | float64 |
+| 29  | ACT_SIGNGU_CD_NM           | 211564         | object  |
+| 30  | CRTFC_TIME_CN              | 211575         | int64   |
+| 31  | ACT_CN                     | 211574         | object  |
+| 32  | REF_MTR_CN                 | 109016         | object  |
+| 33  | PARTCPT_CT_AT              | 211575         | object  |
+| 34  | PARTCPT_CT                 | 211575         | int64   |
+| 35  | PARTCPT_CT_USE_DTLS        | 1133           | object  |
+| 36  | TME                        | 211575         | int64   |
+| 37  | GRP_SDIV_CD                | 989            | float64 |
+| 38  | GRP_SDIV_CD_NM             | 989            | object  |
+| 39  | GRP_INSTT_SEQ_NO           | 211575         | int64   |
+| 40  | GRP_INSTT_CLUB_SEQ_NO      | 211575         | int64   |
+| 41  | GRP_SCHUL_CD               | 1              | float64 |
+| 42  | GRP_SCHUL_CD_NM            | 0              | float64 |
+| 43  | GRP_NM                     | 982            | object  |
+| 44  | NCSRY_COMPLT_AT            | 211575         | object  |
+| 45  | STATE_CD                   | 211575         | int64   |
+| 46  | STATE_CD_NM                | 211575         | object  |
+| 47  | RCRIT_NMPR_SDIV_CD         | 211575         | int64   |
+| 48  | RCRIT_NMPR_SDIV_CD_NM      | 211575         | object  |
+| 49  | RCRIT_NMPR_CO              | 211575         | int64   |
+| 50  | BEFORE_REQST_NO_CN         | 5              | object  |
+| 51  | BEFORE_INSTT_CD            | 5              | object  |
+| 52  | BEFORE_INSTT_CD_NM         | 0              | float64 |
+| 53  | BEFORE_INSTT_ID_NM         | 5              | object  |
+| 54  | BEFORE_CLUB_CD             | 0              | float64 |
+| 55  | BEFORE_CLUB_CD_NM          | 0              | float64 |
+| 56  | USE_AT                     | 211575         | object  |
+| 57  | REGIST_DT                  | 211575         | object  |
+| 58  | ACT_BEGIN_DT               | 211575         | int64   |
+| 59  | ACT_BEGIN_TIME             | 211575         | object  |
+| 60  | ACT_END_DT                 | 211575         | int64   |
+| 61  | ACT_END_TIME               | 211575         | object  |
+| 62  | VLNTWK_ACT_REGIST_AGRE_AT  | 211471         | object  |
+
+*dtypes: float64(10), int64(22), object(31)*
+*memory usage: 101.7+ MB*
+
 #### Full data description
 |index|PROGRM\_SEQ\_NO|REGIST\_SDIV\_CD|DETAIL\_TY\_CD|REQST\_POSBL\_BEGIN\_DE|REQST\_POSBL\_END\_DE|CANCL\_POSBL\_BEGIN\_DE|CANCL\_POSBL\_END\_DE|ACT\_CTPRVN\_CD|ONE\_TME\_PROGRM\_SEQ\_NO|INSTT\_SEQ\_NO|INSTT\_CLUB\_SEQ\_NO|ACT\_RELM\_CD\_NM|DETAIL\_CN\_CD|BSNS\_CD|REGIST\_CTPRVN\_CD|ACT\_SIGNGU\_CD|CRTFC\_TIME\_CN|PARTCPT\_CT|TME|GRP\_SDIV\_CD|
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -50,6 +121,8 @@ https://www.bigdata-culture.kr/bigdata/user/data_market/detail.do?id=4174bb76-10
 |75%|8845528\.5|110002\.0|114001\.0|20210105\.0|20210217\.0|20210105\.0|20210217\.0|20013\.0|0\.0|55073\.0|0\.0|113001\.0|115002\.0|117049\.0|20013\.0|33008\.0|4\.0|0\.0|1\.0|119003\.0|
 |max|8898490\.0|110004\.0|114004\.0|20601226\.0|20610124\.0|20610118\.0|20610124\.0|20018\.0|8898458\.0|56161\.0|111825\.0|113002\.0|115005\.0|117049\.0|20018\.0|222025\.0|8\.0|999999\.0|16\.0|119003\.0|
 
+**Among a total of 63 columns, features that meet our purpose were selected through meetings with team members.** </br>
+**We decided to select and use 15 columns out of the total feature**</br>
 #### Selected data example
 |index|PROGRM\_SEQ\_NO|REGIST\_SDIV\_CD\_NM|DETAIL\_TY\_CD\_NM|ACT\_CTPRVN\_CD\_NM|ACT\_RELM\_CD|DETAIL\_CN\_CD\_NM|ACT\_SIGNGU\_CD\_NM|CRTFC\_TIME\_CN|PARTCPT\_CT|TME|STATE\_CD\_NM|RCRIT\_NMPR\_SDIV\_CD\_NM|RCRIT\_NMPR\_CO|ACT\_BEGIN\_DT|ACT\_BEGIN\_TIME|ACT\_END\_DT|ACT\_END\_TIME|
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -66,12 +139,12 @@ https://www.bigdata-culture.kr/bigdata/user/data_market/detail.do?id=4174bb76-10
 
 ### Step4. Data preprocessing
 #### Data selection: 
-Among a total of 63 columns, features that meet our purpose were selected through meetings with team members. </br>
-We decided to select and use 15 columns out of the total feature</br>
+
 
 
 
 ### Step5. Data analysis
+사용한 라이브러리들 어떻게 학습시켰는지 자세히 쓰기
 
 ### Step6. Data evaluation
 

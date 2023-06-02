@@ -150,3 +150,8 @@ Data columns (total 63 columns):</br>
 
 ## Others
 ### relevant information outside machine learning
+The decision to cancel a volunteer can be influenced by external factors.</br>
+First, the *weather* can affect your volunteer experience. Sudden rain, snow, or high winds can affect outdoor volunteer events.</br>
+If you can't get to your volunteer meeting point due to inclement weather, it's not just outdoor volunteering that will be disrupted, but indoor volunteering as well.</br>
+The second factor is *participants simply changing their minds*. Participants may decide not to participate in a volunteer activity due to their personal circumstances, physical condition, or mood that day. In this case, the volunteer organizers are likely to cancel the day's activities because they don't have enough people.</br>
+In addition, volunteers are often teenagers. Teenagers tend to participate because their volunteer work is recorded in their student records, and this can often happen because teenagers are often less responsible than adults.

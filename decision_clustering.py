@@ -4,6 +4,7 @@
 # 10: 모집인원구분코드명 # 11: 모집인원수 # 12: 활동시작일시
 # 13: 활동시작시간 # 14: 활동종료일시 # 15: 활동종료시간
 
+
 import numpy as np
 import pandas as pd
 from sklearn import preprocessing

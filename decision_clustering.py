@@ -4,7 +4,6 @@
 # 10: 모집인원구분코드명 # 11: 모집인원수 # 12: 활동시작일시
 # 13: 활동시작시간 # 14: 활동종료일시 # 15: 활동종료시간
 
-
 import numpy as np
 import pandas as pd
 from sklearn import preprocessing
@@ -28,29 +27,30 @@ def normalizer(dataset, target_column, m):
         dataset[feature[c]] = scaler.fit_transform(dataset[[feature[c]]])
     return dataset
 
-# Functions to handle missing values / methodFill -> 'ffill', 'bfill', 'mode'
-def fill_missing(df=None, column=None, methodFill='ffill', threshNum=2):
-  if(methodFill == 'mode'):
-    mode = df[column].mode()
-    df[column] = df[column].fillna(str(mode[0]))
-  else:
-    df[column] = df[column].fillna(method=methodFill, limit=threshNum)
-  return df
+# Functions to handle missing values / method_fill -> 'ffill', 'bfill', 'mode'
+def fill_missing(df=None, column=None, method_fill='ffill', thresh_num=2):
+    if method_fill == 'mode':
+        mode = df[feature[column]].mode()
+        df[feature[column]] = df[feature[column]].fillna(str(mode[0]))
+    else:
+        df[feature[column]] = df[feature[column]].fillna(method=method_fill, limit=thresh_num)
+    return df
 
-# Finding outlier data using the iqr
 def get_outlier(df=None, column=None, weight=1.5):
-  # Prioritize columns that have a high correlation with the target value
-  quantile_25 = np.percentile(df[column].values, 25)
-  quantile_75 = np.percentile(df[column].values, 75)
+    # target 값과 상관관계가 높은 열을 우선적으로 진행
+    for c in column:
+        quantile_25 = np.percentile(df[feature[c]].values, 25)
+        quantile_75 = np.percentile(df[feature[c]].values, 75)
 
-  IQR = quantile_75 - quantile_25
-  IQR_weight = IQR * weight
-  
-  lowest = quantile_25 - IQR_weight
-  highest = quantile_75 + IQR_weight
-  
-  outlier_idx = df[column][ (df[column] < lowest) | (df[column] > highest) ].index
-  return outlier_idx
+        iqr = quantile_75 - quantile_25
+        iqr_weight = iqr * weight
+
+        lowest = quantile_25 - iqr_weight
+        highest = quantile_75 + iqr_weight
+
+        outlier_idx = df[feature[c]][(df[feature[c]] < lowest) | (df[feature[c]] > highest)].index
+    # drop outliers
+    return outlier_idx
 
 # Load the dataset
 df = pd.read_csv("data/dataset_for_termproject.csv")
@@ -66,8 +66,8 @@ feature = ['PROGRM_SEQ_NO', 'REGIST_SDIV_CD_NM', 'DETAIL_TY_CD_NM',
 #######################################################
 
 # Handling missing values using functions
-df = fill_missing(df=df, column=feature[5], methodFill='mode')
-df = fill_missing(df=df, column=feature[2], methodFill='bfill', threshNum=45)
+df = fill_missing(df=df, column=5, method_fill='mode')
+df = fill_missing(df=df, column=2, method_fill='bfill', thresh_num=45)
 
 # Change data sample content
 idx = df[df[feature[9]] == "삭제"].index
@@ -87,7 +87,7 @@ df[feature[6]] = df[feature[6]].fillna('')
 df[feature[3]] = df[feature[3]] + ' ' + df[feature[6]]
 
 # Weed out outliers
-oulier_idx = get_outlier(df=df, column=feature[8], weight=1.5)
+oulier_idx = get_outlier(df=df, column=[8], weight=1.5)
 
 # encoding
 encoder = LabelEncoder()
@@ -119,11 +119,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Select features to use for clustering
-numeric_feature = ['ACT_BEGIN_TIME', 'ACT_END_TIME']
+numeric_feature = ['CRTFC_TIME_CN', 'TME', 'RCRIT_NMPR_CO', 'ACT_BEGIN_TIME', 'ACT_END_TIME']
 
-out = ['ACT_BEGIN_TIME', 'ACT_END_TIME']
+out = [7, 8, 11, 13, 15]
 for feat in out:
-  outlier = get_outlier(df=df, column=feat, weight=1.5)
+  outlier = get_outlier(df=df, column=[feat], weight=1.5)
   df = df.drop(labels=outlier, axis=0)
 
 X = df[numeric_feature]
@@ -155,12 +155,13 @@ from sklearn.preprocessing import StandardScaler
 
 # scaled data
 standard_scaler = StandardScaler()
-scaled_df = pd.DataFrame(standard_scaler.fit_transform(X.iloc[:,0:2]), columns=X.iloc[:,0:2].columns)
+scaled_df = pd.DataFrame(standard_scaler.fit_transform(X.iloc[:,0:5]), columns=X.iloc[:,0:5].columns)
 data = df.reset_index(drop=True)
 data[numeric_feature] = scaled_df
 
+
 # Perform clustering with the KMeans algorithm
-kmeans = KMeans(n_clusters=3, n_init=10, random_state=42, max_iter=1000)
+kmeans = KMeans(n_clusters=5, n_init=10, random_state=42, max_iter=1000)
 kmeans.fit(scaled_df)
 
 # Check the clustering result
@@ -197,13 +198,78 @@ clust_df = scaled_df.copy()
 clust_df['clust'] = pred
 print(clust_df.head())
 
+
 # Visualize the result of learning scaled data
 A = clust_df
 
 # Visualize scaled results as a scatter plot
-plt.figure(figsize=(8, 6))
+plt.figure(figsize=(20, 6))
+plt.subplot(131)
 sns.scatterplot(x=A.iloc[:,0], y=A.iloc[:,1], data=scaled_df, hue=kmeans.labels_, palette='coolwarm')
 plt.scatter(centers[:,0], centers[:,1], c='black', alpha=0.8, s=150)
+
+plt.subplot(132)
+sns.scatterplot(x=A.iloc[:,0], y=A.iloc[:,2], data=scaled_df, hue=kmeans.labels_, palette='coolwarm')
+plt.scatter(centers[:,0], centers[:,2], c='black', alpha=0.8, s=150)
+
+plt.subplot(133)
+sns.scatterplot(x=A.iloc[:,0], y=A.iloc[:,3], data=scaled_df, hue=kmeans.labels_, palette='coolwarm')
+plt.scatter(centers[:,0], centers[:,3], c='black', alpha=0.8, s=150)
+
+plt.show()
+
+plt.figure(figsize=(20, 6))
+
+plt.subplot(131)
+sns.scatterplot(x=A.iloc[:,0], y=A.iloc[:,4], data=scaled_df, hue=kmeans.labels_, palette='coolwarm')
+plt.scatter(centers[:,0], centers[:,1], c='black', alpha=0.8, s=150)
+4
+plt.show()
+
+# 3차원으로 시각화하기
+fig = plt.figure(figsize=(8, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+# 데이터 scatterplot
+ax.scatter(  A.iloc[:,0]
+           , A.iloc[:,1]
+           , A.iloc[:,2]
+           , c = A.clust
+           , s = 10
+           , cmap = "rainbow"
+           , alpha = 1
+          )
+
+# centroid scatterplot
+ax.scatter(centers[:,0],centers[:,1],centers[:,2] ,c='black', s=200, marker='*')
+ax.set_xlabel('CRTFC_TIME_CN')
+ax.set_ylabel('TME')
+ax.set_zlabel('RCRIT_NMPR_CO')
+
+plt.show()
+
+# 3차원으로 시각화하기
+
+fig = plt.figure(figsize=(8, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+print(A)
+
+# 데이터 scatterplot
+ax.scatter(  A.iloc[:,4]
+           , A.iloc[:,3]
+           , A.iloc[:,2]
+           , c = A.clust
+           , s = 10
+           , cmap = "rainbow"
+           , alpha = 1
+          )
+
+# centroid scatterplot
+ax.scatter(centers[:,0],centers[:,1],centers[:,2] ,c='black', s=200, marker='*')
+ax.set_xlabel('ACT_END_TIME')
+ax.set_ylabel('ACT_BEGIN_TIME')
+ax.set_zlabel('RCRIT_NMPR_CO')
 plt.show()
 
 # Visualize the number of clusters and check them in a table
@@ -214,7 +280,6 @@ plt.ylabel('Count')
 plt.title('Cluster Counts')
 plt.show()
 
-# Output data for each cluster
 print('cluster의 평균값')
 print(clust_df.groupby('clust').mean())
 
@@ -224,88 +289,154 @@ print(clust_df.groupby('clust').max())
 print('cluster의 최소값')
 print(clust_df.groupby('clust').min())
 
-#######################################################################################################################################################################################################
 
-# ks = range(1,10)
-# inertias = []
+# # Perform clustering with the KMeans algorithm
+# kmeans = KMeans(n_clusters=3, n_init=10, random_state=42, max_iter=1000)
+# kmeans.fit(scaled_df)
 
-# for k in ks:
-#     model = KMeans(n_clusters=k, n_init=10)
-#     model.fit(X)
-#     inertias.append(model.inertia_)
+# # Check the clustering result
+# cluster_labels = kmeans.labels_
+# data['Cluster'] = cluster_labels
 
-# # Plot ks vs inertias
-# plt.figure(figsize=(4, 4))
+# # Calculate the number of data per cluster
+# cluster_counts = data['Cluster'].value_counts().reset_index()
+# cluster_counts.columns = ['Cluster', 'Count']
 
-# plt.plot(ks, inertias, '-o')
-# plt.xlabel('number of clusters, k')
-# plt.ylabel('inertia')
-# plt.xticks(ks)
+# # Clustering result dataset output
+# print(cluster_counts)
+# print(data.head())
+
+# # Split the DataFrame by grouping the values into equals
+# grouped_dfs = []
+# for _, group_df in data.groupby("Cluster"):
+#     grouped_dfs.append(group_df)
+
+# # Calculation and output of success rate in partitioned DataFrames
+# for i, group_df in enumerate(grouped_dfs):
+#     samples = group_df.shape[0]
+#     complete = group_df[group_df['STATE_CD_NM'] == 0].shape[0]
+#     print(complete / samples)
+
+# # store the result in a variable
+# centers = kmeans.cluster_centers_ # the centroid of each cluster
+# pred = kmeans.predict(scaled_df) # each predicted cluster
+
+# print(pd.DataFrame(centers))
+# print(pred[:10])
+
+# clust_df = scaled_df.copy()
+# clust_df['clust'] = pred
+# print(clust_df.head())
+
+# # Visualize the result of learning scaled data
+# A = clust_df
+
+# # Visualize scaled results as a scatter plot
+# plt.figure(figsize=(8, 6))
+# sns.scatterplot(x=A.iloc[:,0], y=A.iloc[:,1], data=scaled_df, hue=kmeans.labels_, palette='coolwarm')
+# plt.scatter(centers[:,0], centers[:,1], c='black', alpha=0.8, s=150)
 # plt.show()
 
-#######################################################################################################################################################################################################
+# # Visualize the number of clusters and check them in a table
+# plt.figure(figsize=(8, 6))
+# sns.barplot(x='Cluster', y='Count', data=cluster_counts)
+# plt.xlabel('Cluster')
+# plt.ylabel('Count')
+# plt.title('Cluster Counts')
+# plt.show()
 
-# Perform clustering with the KMeans algorithm
-kmeans = KMeans(n_clusters=3, n_init=10, random_state=42, max_iter=1000)
-kmeans.fit(X)
+# # Output data for each cluster
+# print('cluster의 평균값')
+# print(clust_df.groupby('clust').mean())
 
-# Check the clustering result
-cluster_labels = kmeans.labels_
-df['Cluster'] = cluster_labels
+# print('cluster의 최대값')
+# print(clust_df.groupby('clust').max())
 
-# Calculate the number of data per cluster
-cluster_counts = df['Cluster'].value_counts().reset_index()
-cluster_counts.columns = ['Cluster', 'Count']
+# print('cluster의 최소값')
+# print(clust_df.groupby('clust').min())
 
-# Clustering result dataset output
-print(cluster_counts)
-print(df.head())
+# #######################################################################################################################################################################################################
 
-# Split the DataFrame by grouping the values into equals
-grouped_dfs = []
-for _, group_df in df.groupby("Cluster"):
-    grouped_dfs.append(group_df)
+# # ks = range(1,10)
+# # inertias = []
 
-# Calculation and output of success rate in partitioned DataFrames
-for i, group_df in enumerate(grouped_dfs):
-    samples = group_df.shape[0]
-    complete = group_df[group_df['STATE_CD_NM'] == 0].shape[0]
-    print(complete / samples)
+# # for k in ks:
+# #     model = KMeans(n_clusters=k, n_init=10)
+# #     model.fit(X)
+# #     inertias.append(model.inertia_)
 
-# store the result in a variable
-centers = kmeans.cluster_centers_ # the centroid of each cluster
-pred = kmeans.predict(X) # each predicted cluster
+# # # Plot ks vs inertias
+# # plt.figure(figsize=(4, 4))
 
-print(pd.DataFrame(centers))
-print(pred[:10])
+# # plt.plot(ks, inertias, '-o')
+# # plt.xlabel('number of clusters, k')
+# # plt.ylabel('inertia')
+# # plt.xticks(ks)
+# # plt.show()
 
-clust_df = X.copy()
-clust_df['clust'] = pred
-print(clust_df.head())
+# #######################################################################################################################################################################################################
 
-# Learning and visualizing non-scaling data
-A = clust_df
+# # Perform clustering with the KMeans algorithm
+# kmeans = KMeans(n_clusters=3, n_init=10, random_state=42, max_iter=1000)
+# kmeans.fit(X)
 
-# Visualize scaled results as a scatter plot
-plt.figure(figsize=(8, 6))
-sns.scatterplot(x=A.iloc[:,0], y=A.iloc[:,1], data=X, hue=kmeans.labels_, palette='coolwarm')
-plt.scatter(centers[:,0], centers[:,1], c='black', alpha=0.8, s=150)
-plt.show()
+# # Check the clustering result
+# cluster_labels = kmeans.labels_
+# df['Cluster'] = cluster_labels
 
-# Visualize the number of clusters and check them in a table
-plt.figure(figsize=(8, 6))
-sns.barplot(x='Cluster', y='Count', data=cluster_counts)
-plt.xlabel('Cluster')
-plt.ylabel('Count')
-plt.title('Cluster Counts')
-plt.show()
+# # Calculate the number of data per cluster
+# cluster_counts = df['Cluster'].value_counts().reset_index()
+# cluster_counts.columns = ['Cluster', 'Count']
 
-# Output data for each cluster
-print('cluster의 평균값')
-print(clust_df.groupby('clust').mean())
+# # Clustering result dataset output
+# print(cluster_counts)
+# print(df.head())
 
-print('cluster의 최대값')
-print(clust_df.groupby('clust').max())
+# # Split the DataFrame by grouping the values into equals
+# grouped_dfs = []
+# for _, group_df in df.groupby("Cluster"):
+#     grouped_dfs.append(group_df)
 
-print('cluster의 최소값')
-print(clust_df.groupby('clust').min())
+# # Calculation and output of success rate in partitioned DataFrames
+# for i, group_df in enumerate(grouped_dfs):
+#     samples = group_df.shape[0]
+#     complete = group_df[group_df['STATE_CD_NM'] == 0].shape[0]
+#     print(complete / samples)
+
+# # store the result in a variable
+# centers = kmeans.cluster_centers_ # the centroid of each cluster
+# pred = kmeans.predict(X) # each predicted cluster
+
+# print(pd.DataFrame(centers))
+# print(pred[:10])
+
+# clust_df = X.copy()
+# clust_df['clust'] = pred
+# print(clust_df.head())
+
+# # Learning and visualizing non-scaling data
+# A = clust_df
+
+# # Visualize scaled results as a scatter plot
+# plt.figure(figsize=(8, 6))
+# sns.scatterplot(x=A.iloc[:,0], y=A.iloc[:,1], data=X, hue=kmeans.labels_, palette='coolwarm')
+# plt.scatter(centers[:,0], centers[:,1], c='black', alpha=0.8, s=150)
+# plt.show()
+
+# # Visualize the number of clusters and check them in a table
+# plt.figure(figsize=(8, 6))
+# sns.barplot(x='Cluster', y='Count', data=cluster_counts)
+# plt.xlabel('Cluster')
+# plt.ylabel('Count')
+# plt.title('Cluster Counts')
+# plt.show()
+
+# # Output data for each cluster
+# print('cluster의 평균값')
+# print(clust_df.groupby('clust').mean())
+
+# print('cluster의 최대값')
+# print(clust_df.groupby('clust').max())
+
+# print('cluster의 최소값')
+# print(clust_df.groupby('clust').min())

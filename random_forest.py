@@ -1,64 +1,14 @@
-import numpy as np
-import pandas as pd
-import matplotlib as plt
-import seaborn as sns
-from sklearn import preprocessing
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import train_test_split, KFold, cross_val_score
-from sklearn.metrics import accuracy_score, precision_score
-from sklearn.ensemble import RandomForestClassifier
 import os
 
+import numpy as np
+import pandas as pd
+from sklearn import preprocessing
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import KFold
 
-# scale data with normalization, exclude target column
-def normalizer(dataset, target_column, m):
-    scaler = None
-    if m == 'min-max':
-        scaler = preprocessing.MinMaxScaler()
-    elif m == 'z-score':
-        scaler = preprocessing.StandardScaler()
-    elif m == 'robust':
-        scaler = preprocessing.RobustScaler()
-    else:
-        print("Invalid method")
-        return None
-
-    # scale data
-    for c in target_column:
-        dataset[feature[c]] = scaler.fit_transform(dataset[[feature[c]]])
-    return dataset
-
-
-def fill_missing(df=None, column=None, method_fill='ffill', thresh_num=2):
-    if method_fill == 'mode':
-        mode = df[feature[column]].mode()
-        df[feature[column]] = df[feature[column]].fillna(str(mode[0]))
-    else:
-        df[feature[column]] = df[feature[column]].fillna(method=method_fill, limit=thresh_num)
-    return df.dropna(axis=0, how='any')
-
-
-def get_outlier(df=None, column=None, weight=1.5):
-    # target 값과 상관관계가 높은 열을 우선적으로 진행
-    for c in column:
-        quantile_25 = np.percentile(df[feature[c]].values, 25)
-        quantile_75 = np.percentile(df[feature[c]].values, 75)
-
-        iqr = quantile_75 - quantile_25
-        iqr_weight = iqr * weight
-
-        lowest = quantile_25 - iqr_weight
-        highest = quantile_75 + iqr_weight
-
-        outlier_idx = df[feature[c]][(df[feature[c]] < lowest) | (df[feature[c]] > highest)].index
-        df.drop(outlier_idx, axis=0)
-    # drop outliers
-    return df
-
-
-def bagging_method_evaluation():
-    pass
-
+from preprocess_package import fill_missing
+from preprocess_package import get_outlier
 
 pd.set_option('display.max_columns', None)
 feature = ['PROGRM_SEQ_NO', 'REGIST_SDIV_CD_NM', 'DETAIL_TY_CD_NM',
@@ -74,14 +24,13 @@ data = pd.read_csv(
     encoding='utf-8',
     low_memory=False)
 
-# data preprocessing and analysis
+# data preprocessing and analysis(Random Forest Algorithm)
 # steps:
 # 1. encode categorical data
 # 2. process nan data
-# 3. scale numerical data with normalization
-# 4. drop outliers
-# 5. learn the model
-# 6. predict the result
+# 3. drop outliers
+# 4. learn the model
+# 5. predict the result
 
 # 1. encode categorical data : label encoding
 data = data[data[feature[9]] != '삭제']
@@ -139,15 +88,15 @@ for limit in proc_nan_limit:
         for feat in proc_nan_feature:
             filled_data = fill_missing(df=filled_data, column=feat, method_fill=method, thresh_num=limit)
 
-            # 4. drop outliers
+            # 3. drop outliers
             processed_data = get_outlier(df=filled_data, column=feat_with_numeric, weight=1.5)
 
             print("---------------------")
             print("nan limit : ", limit)
             print("nan method : ", method)
 
-            # 5. learn the model
-            # 5.1 split the data into train and test data
+            # 4. learn the model
+            # split the data into train and test data
             kf = KFold(n_splits=5, shuffle=True)
             kf.get_n_splits(processed_data)
             cv_accuracy = []
@@ -158,18 +107,19 @@ for limit in proc_nan_limit:
                     n_estimators=10,
                     min_samples_split=5,
                     random_state=42
+                    # max_depth=None
                 )
                 model.fit(train_data, train_target)
 
-                # 6. predict the result
-                # 6.1 predict the result with test data
+                # 5. predict the result with test data
                 predicted = model.predict(test_data)
 
-                # 7. cross validation
-                # 7.1 calculate the accuracy
+                # 6. cross validation
+                # calculate the accuracy
                 accuracy = accuracy_score(test_target, predicted)
                 cv_accuracy.append(accuracy)
 
+            # print the result(mean accuracy)
             print("accuracy : ", np.mean(cv_accuracy))
             print("---------------------")
 

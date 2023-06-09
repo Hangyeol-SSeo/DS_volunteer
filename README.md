@@ -8,8 +8,6 @@ Among teenagers who want to start volunteer work, there are not many cases where
 **Volunteer work dataset**</br>
 https://www.bigdata-culture.kr/bigdata/user/data_market/detail.do?id=4174bb76-1077-4e52-a84b-e341397c7c74
 
-## Samples
-
 ## Columns used
 0. : 프로그램일련번호 - PROGRM_SEQ_NO / DECIMAL / 12,0
 1. : 등록구분코드명 - REGIST_SDIV_CD_NM / VARCHAR / 300
@@ -32,14 +30,18 @@ https://www.bigdata-culture.kr/bigdata/user/data_market/detail.do?id=4174bb76-10
 What is the _difference_ between activities canceled/deleted compared to activities that are active/completed? </br>
 For example, compare the characteristics of activity type, region, time, etc </br>
 => This data allows those who want to start volunteering to determine whether they can successfully complete their volunteer work. </br>
-Target: Among teenagers who want to start volunteer work, there are not many cases where they are experienced or familiar with volunteer work. In addition, there are often cases where volunteer activities are canceled in the middle or failed to start activities at all. Therefore, it analyzes which volunteer activities are mainly canceled and completed for these teenagers to help them choose volunteer activities successfully with responsibility.
+Target: Among teenagers who want to start volunteer work, there are not many cases where they are experienced or familiar with volunteer work. In addition, there are often cases where volunteer activities are canceled in the middle or failed to start activities at all. Therefore, it analyzes which volunteer activities are mainly canceled and completed for these teenagers to help them choose volunteer activities successfully with responsibility. 
+</br></br>
 
-### Step2. Data curation(skip)
-https://www.bigdata-culture.kr/bigdata/user/data_market/detail.do?id=4174bb76-1077-4e52-a84b-e341397c7c74
+### Step2. Data curation
+https://www.bigdata-culture.kr/bigdata/user/data_market/detail.do?id=4174bb76-1077-4e52-a84b-e341397c7c74    
+</br>
 
 ### Step3. Data inspection
-#### Full data information
-Data columns (total 63 columns):</br>
+<details>
+  <summary>Full data information</summary>
+  
+Data columns (total 63 columns):    
 | #   | Column                     | Non-Null Count | Dtype   |
 | --- | ------                     | -------------- | -----   |
 | 0   | PROGRM_SEQ_NO              | 211575         | int64   |
@@ -106,10 +108,14 @@ Data columns (total 63 columns):</br>
 | 61  | ACT_END_TIME               | 211575         | object  |
 | 62  | VLNTWK_ACT_REGIST_AGRE_AT  | 211471         | object  |
 
-*dtypes: float64(10), int64(22), object(31)*
+*dtypes: float64(10), int64(22), object(31)*     
 *memory usage: 101.7+ MB*
+  
+</details>
 
-#### Full data description
+<details>
+  <summary>Full data description</summary>
+  
 |index|PROGRM\_SEQ\_NO|REGIST\_SDIV\_CD|DETAIL\_TY\_CD|REQST\_POSBL\_BEGIN\_DE|REQST\_POSBL\_END\_DE|CANCL\_POSBL\_BEGIN\_DE|CANCL\_POSBL\_END\_DE|ACT\_CTPRVN\_CD|ONE\_TME\_PROGRM\_SEQ\_NO|INSTT\_SEQ\_NO|INSTT\_CLUB\_SEQ\_NO|ACT\_RELM\_CD\_NM|DETAIL\_CN\_CD|BSNS\_CD|REGIST\_CTPRVN\_CD|ACT\_SIGNGU\_CD|CRTFC\_TIME\_CN|PARTCPT\_CT|TME|GRP\_SDIV\_CD|
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 |count|211575\.0|211575\.0|209415\.0|211575\.0|211575\.0|211575\.0|211575\.0|211575\.0|211575\.0|211575\.0|211575\.0|211575\.0|209320\.0|5\.0|211575\.0|211564\.0|211575\.0|211575\.0|211575\.0|989\.0|
@@ -121,9 +127,16 @@ Data columns (total 63 columns):</br>
 |75%|8845528\.5|110002\.0|114001\.0|20210105\.0|20210217\.0|20210105\.0|20210217\.0|20013\.0|0\.0|55073\.0|0\.0|113001\.0|115002\.0|117049\.0|20013\.0|33008\.0|4\.0|0\.0|1\.0|119003\.0|
 |max|8898490\.0|110004\.0|114004\.0|20601226\.0|20610124\.0|20610118\.0|20610124\.0|20018\.0|8898458\.0|56161\.0|111825\.0|113002\.0|115005\.0|117049\.0|20018\.0|222025\.0|8\.0|999999\.0|16\.0|119003\.0|
 
+</details>
+</br>
+
+### Step4. Data preprocessing
+1. Feature selection:   
 **Among a total of 63 columns, features that meet our purpose were selected through meetings with team members.** </br>
 **We decided to select and use 15 columns out of the total feature**</br>
-#### Selected data example
+<details>
+  <summary>Selected data example</summary>
+  
 |index|PROGRM\_SEQ\_NO|REGIST\_SDIV\_CD\_NM|DETAIL\_TY\_CD\_NM|ACT\_CTPRVN\_CD\_NM|ACT\_RELM\_CD|DETAIL\_CN\_CD\_NM|ACT\_SIGNGU\_CD\_NM|CRTFC\_TIME\_CN|PARTCPT\_CT|TME|STATE\_CD\_NM|RCRIT\_NMPR\_SDIV\_CD\_NM|RCRIT\_NMPR\_CO|ACT\_BEGIN\_DT|ACT\_BEGIN\_TIME|ACT\_END\_DT|ACT\_END\_TIME|
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 |0|6740176|일괄|지역사회봉사활동|서울특별시|봉사활동|교육\(지도\)봉사|동작구|8|0|0|활동완료|전체|6|20160618|13:30|20160618|21:30|
@@ -136,17 +149,97 @@ Data columns (total 63 columns):</br>
 |7|912171|개별|지역사회봉사활동|부산광역시|봉사활동|교육\(지도\)봉사|NaN|4|0|0|삭제|전체|1|20610124|13:00|20610125|17:00|
 |8|904530|개별|지역사회봉사활동|부산광역시|봉사활동|교육\(지도\)봉사|NaN|4|0|0|삭제|개별|4|20610122|1:00|20610122|5:00|
 |9|7371820|개별|지역사회봉사활동|대구광역시|봉사활동|교육\(지도\)봉사|남구|1|0|0|활동취소|전체|1|20270520|17:00|20270520|18:00|
+  
+</details>
 
-### Step4. Data preprocessing
-#### Data selection: 
+2. Encode categorical data   
+Using LabelEncoder, we converted the categorical data into numbers.
+```
+label_encoder = preprocessing.LabelEncoder()
+encoded_column = label_encoder.fit_transform(data['REGIST_SDIV_CD_NM'])
+data['REGIST_SDIV_CD_NM'] = encoded_column
+```    
 
+3. Remove missing values
+Using 'ffill', 'bfill', 'mode', fill missing values
+```
+def fill_missing(df=None, column=None, method_fill='ffill', thresh_num=2):
+    if method_fill == 'mode':
+        mode = df[feature[column]].mode()
+        df[feature[column]] = df[feature[column]].fillna(str(mode[0]))
+    else:
+        df[feature[column]] = df[feature[column]].fillna(method=method_fill, limit=thresh_num)
+    return df.dropna(axis=0, how='any')
+```
 
+4. Drop outliers
+Remove any outliers that may interfere with model training
+```
+def get_outlier(df=None, column=None, weight=1.5):
+    for c in column:
+        quantile_25 = np.percentile(df[feature[c]].values, 25)
+        quantile_75 = np.percentile(df[feature[c]].values, 75)
 
+        iqr = quantile_75 - quantile_25
+        iqr_weight = iqr * weight
+
+        lowest = quantile_25 - iqr_weight
+        highest = quantile_75 + iqr_weight
+
+        outlier_idx = df[feature[c]][(df[feature[c]] < lowest) | (df[feature[c]] > highest)].index
+        df.drop(outlier_idx, axis=0)
+    # drop outliers
+    return df
+```
+```
+processed_data = get_outlier(df=filled_data, column=feat_with_numeric, weight=1.5)
+```
+
+</br>
 
 ### Step5. Data analysis
-사용한 라이브러리들 어떻게 학습시켰는지 자세히 쓰기
+**Classification**    
+```
+model = RandomForestClassifier(
+           n_estimators=10,
+           min_samples_split=5,
+           random_state=42)
+model.fit(train_data, train_target)
+predicted = model.predict(test_data)
+```    
+
+**Clustering**    
+```
+kmeans = KMeans(n_clusters=3, n_init=10, random_state=42, max_iter=1000)
+kmeans.fit(scaled_df)
+
+cluster_labels = kmeans.labels_
+data['Cluster'] = cluster_labels
+
+cluster_counts = data['Cluster'].value_counts().reset_index()
+cluster_counts.columns = ['Cluster', 'Count']
+
+print(cluster_counts)
+print(data.head())
+```
+![scaled_plot_result](https://github.com/Hangyeol-SSeo/DS_volunteer/assets/52482199/74e85731-23fa-47ba-9e1d-e3aec2493a50)    
 
 ### Step6. Data evaluation
+**Classification**    
+Separate train set and test set using KFold    
+Through several attempts, we found that KFold's n_split had the highest score when it was 5     
+Not only KFold, but we also went through the process of finding the optimal score by changing parameters of various methods.    
+<img width="32%" height="33%" alt="image" src="https://github.com/Hangyeol-SSeo/DS_volunteer/assets/52482199/2a17d691-f376-4543-aea9-3d29c948546d">
+<img width="32%" height="33%" alt="image" src="https://github.com/Hangyeol-SSeo/DS_volunteer/assets/52482199/51a1cc45-9178-4c86-82d7-f99691e2e8ca">
+<img width="32%" height="33%" alt="image" src="https://github.com/Hangyeol-SSeo/DS_volunteer/assets/52482199/b4a71edb-4e4c-4cea-a0bd-eeb316b3eafe">     
+
+
+**Clustering**       
+Elbow was used to obtain an appropriate k value from K-Means    
+From this data, we determined that it would be best to split into three clusters, and we plotted the population of each cluster.    
+<img width="45%" alt="image" src="https://github.com/Hangyeol-SSeo/DS_volunteer/assets/52482199/8a47858a-683d-4eb7-b536-a9ac3c2294ef">
+<img width="45%" alt="image" src="https://github.com/Hangyeol-SSeo/DS_volunteer/assets/52482199/1cbf59d0-8769-466f-b757-292e58af48a5">     
+
 
 ## Others
 ### relevant information outside machine learning
